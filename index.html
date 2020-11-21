@@ -3,7 +3,7 @@
     <title>花呗广告生成器</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport"
-          content="width=device-width, initial-scale=1,minimum-scale=1.0, maximum-scale=1.0">
+          content="width=device-width, initial-scale=1">
     <script src="assets/lib/dom-to-image.min.js"></script>
     <style>
         @font-face {
@@ -130,14 +130,20 @@
       reader.readAsDataURL(fileInput.files[0]);
     }
   };
-  window.onFontSizeChange = (event) => {
-    const {firstCopywriting, secondCopywriting} = getElements();
+  window.onFirstFontSizeChange = (event) => {
+    const {firstCopywriting} = getElements();
     firstCopywriting.style.fontSize = `${event.target.value}px`;
+  };
+  window.onSecondFontSizeChange = (event) => {
+    const {secondCopywriting} = getElements();
     secondCopywriting.style.fontSize = `${event.target.value}px`;
   };
-  window.onLineHeightChange = (event) => {
-    const {firstCopywriting, secondCopywriting} = getElements();
+  window.onFirstLineHeightChange = (event) => {
+    const {firstCopywriting} = getElements();
     firstCopywriting.style.lineHeight = `${event.target.value}px`;
+  };
+  window.onSecondLineHeightChange = (event) => {
+    const {secondCopywriting} = getElements();
     secondCopywriting.style.lineHeight = `${event.target.value}px`;
   };
   window.onContentImgLoad = syncCanvasSize;
@@ -163,13 +169,21 @@
         点击文本即可编辑，点击图片即可替换图片。
     </div>
     <br>
-    <label for="fontsize">
-        字体大小
-        <input id="fontsize" type="number" value="56" onchange="onFontSizeChange(event)">
+    <label for="fontsize1">
+        第一段字体大小
+        <input id="fontsize1" type="number" value="56" onchange="onFirstFontSizeChange(event)">
     </label>
-    <label for="lineheight">
-        行间距
-        <input id="lineheight" type="number" value="100" onchange="onLineHeightChange(event)">
+    <label for="fontsize2">
+        第二段字体大小
+        <input id="fontsize2" type="number" value="56" onchange="onSecondFontSizeChange(event)">
+    </label>
+    <label for="lineheight1">
+        第一段行间距
+        <input id="lineheight1" type="number" value="100" onchange="onFirstLineHeightChange(event)">
+    </label>
+    <label for="lineheight2">
+        第二段行间距
+        <input id="lineheight2" type="number" value="100" onchange="onSecondLineHeightChange(event)">
     </label>
 
     <button onclick="generate()">生成图片</button>
