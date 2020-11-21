@@ -1,0 +1,208 @@
+<html>
+<head>
+    <title>花呗广告生成器</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1,minimum-scale=1.0, maximum-scale=1.0">
+    <script src="assets/lib/dom-to-image.min.js"></script>
+    <style>
+        @font-face {
+            font-family: "SourceHanSansCN";
+            src: url("assets/fonts/SourceHanSansCN-Bold.otf");
+        }
+
+        html {
+            font-family: 'SourceHanSansCN', Arial, sans-serif;
+            margin: 0;
+        }
+
+        body {
+            margin: 0;
+            padding-bottom: 300px;
+        }
+
+        .app {
+            padding: 8px;
+        }
+
+        label, button {
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        button {
+            padding: 8px;
+            margin-bottom: 24px;
+        }
+
+        #canvas {
+            position: relative;
+        }
+
+        #content {
+            filter: brightness(75%);
+            /*max-width: 100vw;*/
+        }
+
+        .copywriting {
+            color: white;
+            font-weight: bold;
+            background: steelblue;
+            font-size: 56px;
+            line-height: 100px;
+            letter-spacing: 2px;
+            z-index: 1;
+        }
+
+        .copywriting.first {
+            position: absolute;
+            left: 32px;
+            top: 32px;
+        }
+
+        .copywriting.second {
+            position: absolute;
+            right: 32px;
+            bottom: 32px;
+            text-align: right;
+        }
+
+        .footer {
+            width: 100%;
+            background: white;
+            position: relative;
+            height: 72px;
+        }
+
+        .left-logo {
+            position: absolute;
+            left: 16px;
+            top: 16px;
+        }
+
+        .right-logo {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+        }
+
+        .left-logo img {
+            max-width: 100%;
+        }
+
+        #fileInput {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<script>
+  const getElements = () => {
+    return {
+      canvas: document.getElementById('canvas'),
+      fileInput: document.getElementById('fileInput'),
+      content: document.getElementById('content'),
+      firstCopywriting: document.querySelector('.copywriting.first'),
+      secondCopywriting: document.querySelector('.copywriting.second')
+    }
+  };
+
+  const syncCanvasSize = () => {
+    const {canvas, content} = getElements();
+    const styles = getComputedStyle(content);
+    canvas.style.width = styles.width;
+    canvas.style.height = styles.height;
+  };
+
+  window.onImgClick = () => {
+    const {fileInput} = getElements();
+    fileInput.click();
+  };
+  window.onFileUpload = () => {
+    const {fileInput, content} = getElements();
+    if (fileInput.files && fileInput.files[0]) {
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        content.src = e.target.result;
+      };
+
+      reader.readAsDataURL(fileInput.files[0]);
+    }
+  };
+  window.onFontSizeChange = (event) => {
+    const {firstCopywriting, secondCopywriting} = getElements();
+    firstCopywriting.style.fontSize = `${event.target.value}px`;
+    secondCopywriting.style.fontSize = `${event.target.value}px`;
+  };
+  window.onLineHeightChange = (event) => {
+    const {firstCopywriting, secondCopywriting} = getElements();
+    firstCopywriting.style.lineHeight = `${event.target.value}px`;
+    secondCopywriting.style.lineHeight = `${event.target.value}px`;
+  };
+  window.onContentImgLoad = syncCanvasSize;
+  window.addEventListener('resize', syncCanvasSize)
+
+  window.generate = () => {
+    const { canvas } = getElements();
+
+    domtoimage.toPng(canvas).then(data => {
+      const link = document.createElement("a");
+
+      document.body.appendChild(link); // for Firefox
+
+      link.setAttribute("href", data);
+      link.setAttribute("download", "ads.png");
+      link.click();
+    });
+  }
+</script>
+
+<div class="app">
+    <div class="tip">
+        点击文本即可编辑，点击图片即可替换图片。
+    </div>
+    <br>
+    <label for="fontsize">
+        字体大小
+        <input id="fontsize" type="number" value="56" onchange="onFontSizeChange(event)">
+    </label>
+    <label for="lineheight">
+        行间距
+        <input id="lineheight" type="number" value="100" onchange="onLineHeightChange(event)">
+    </label>
+
+    <button onclick="generate()">生成图片</button>
+
+    <input id="fileInput" type="file" onchange="onFileUpload(event)"/>
+
+    <div id="canvas">
+        <p class="copywriting first" contenteditable="true">
+            一个人的日子
+            <br>
+            就算再拮据
+            <br>
+            唯有游戏
+            <br>
+            也绝对不能将就
+        </p>
+
+        <img id="content" src="assets/sample.jpg" alt="" onclick="onImgClick()" onload="onContentImgLoad(event)">
+
+        <p class="copywriting second" contenteditable="true">
+            24 岁
+            <br>
+            待业
+            <br>
+            用花呗首发了 PS5
+        </p>
+        <div class="footer">
+            <div class="left-logo">
+                <img src="assets/logo-left.svg" alt="logo-left">
+            </div>
+            <img class="right-logo" src="assets/logo-right.svg" alt="logo-right">
+        </div>
+    </div>
+</div>
+</body>
+</html>
